@@ -6926,6 +6926,10 @@ react-sortable-tree@^2.2.0:
     react-lifecycles-compat "^3.0.4"
     react-virtualized "^9.19.1"
 
+react-step-wizard@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/react-step-wizard/-/react-step-wizard-4.3.1.tgz#6f89b8d374d08261b433d4c5815386eefff09597"
+
 react-svg-inline@^2.0.0, react-svg-inline@^2.0.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/react-svg-inline/-/react-svg-inline-2.1.1.tgz#532664006bf5b4f9ca2879d185e546df9a7476ef"

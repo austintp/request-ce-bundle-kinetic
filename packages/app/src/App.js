@@ -24,28 +24,41 @@ export const AppComponent = props =>
       <ToastsContainer />
       <LoginModal />
       <ModalFormContainer />
-      <HeaderContainer hasSidebar toggleSidebarOpen={props.toggleSidebarOpen} />
       <props.AppProvider
         render={({ main, sidebar }) =>
           sidebar ? (
-            <Sidebar
-              sidebar={sidebar}
-              shadow={false}
-              open={props.sidebarOpen && props.layoutSize === 'small'}
-              docked={props.sidebarOpen && props.layoutSize !== 'small'}
-              onSetOpen={props.setSidebarOpen}
-              rootClassName="sidebar-layout-wrapper"
-              sidebarClassName={`sidebar-container ${
-                true ? 'drawer' : 'overlay'
-              }`}
-              contentClassName={`main-container ${
-                props.sidebarOpen ? 'open' : 'closed'
-              }`}
-            >
-              {main}
-            </Sidebar>
+            <Fragment>
+              <HeaderContainer
+                hasSidebar
+                toggleSidebarOpen={props.toggleSidebarOpen}
+              />
+              <Sidebar
+                sidebar={sidebar}
+                shadow={false}
+                open={props.sidebarOpen && props.layoutSize === 'small'}
+                docked={props.sidebarOpen && props.layoutSize !== 'small'}
+                onSetOpen={props.setSidebarOpen}
+                rootClassName="sidebar-layout-wrapper"
+                sidebarClassName={`sidebar-container ${
+                  true ? 'drawer' : 'overlay'
+                }`}
+                contentClassName={`main-container ${
+                  props.sidebarOpen ? 'open' : 'closed'
+                }`}
+              >
+                {main}
+              </Sidebar>
+            </Fragment>
           ) : (
-            main
+            <Fragment>
+              <HeaderContainer
+                hasSidebar={false}
+                toggleSidebarOpen={props.toggleSidebarOpen}
+              />
+              <div className="no-sidebar">
+                <div className="main-container">{main}</div>
+              </div>
+            </Fragment>
           )
         }
       />

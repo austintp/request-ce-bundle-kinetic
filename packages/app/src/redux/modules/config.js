@@ -1,7 +1,10 @@
 import { Record } from 'immutable';
 import { LOCATION_CHANGE } from 'connected-react-router';
 import { matchPath } from 'react-router';
+
+import { version as appPackageVersion } from '../../../package.json';
 import * as Utils from 'common/src/utils';
+
 const { namespace, withPayload } = Utils;
 
 export const types = {
@@ -17,6 +20,7 @@ export const actions = {
 export const State = Record({
   kappSlug: null,
   version: null,
+  packageVersion: appPackageVersion,
 });
 
 export const reducer = (state = State(), { type, payload }) => {

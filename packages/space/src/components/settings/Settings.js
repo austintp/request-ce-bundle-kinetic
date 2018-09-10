@@ -11,6 +11,7 @@ import { Datastore } from './datastore/Datastore';
 import { Robots } from './robots/Robots';
 import { Users } from './users/Users';
 import { Profile } from './profile/Profile';
+import { Wizard } from './setup/Wizard';
 import { actions as datastoreActions } from '../../redux/modules/settingsDatastore';
 
 export const SettingsComponent = () => (
@@ -21,6 +22,7 @@ export const SettingsComponent = () => (
     <Route path="/settings/robots" component={Robots} />
     <Route path="/settings/users" component={Users} />
     <Route path="/settings/notifications" component={Notifications} />
+    <Route path="/settings/setup" component={Wizard} />
     <Route component={SettingsNavigation} />
   </Switch>
 );
