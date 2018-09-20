@@ -1,0 +1,9 @@
+[
+  {
+    "event": "Submitted",
+    "filter": "submission('type') === \"Utility\"",
+    "name": "Utility Submission Submitted",
+    "type": "Submission",
+    "url": "${space('attribute:Task Server Scheme')}://${space('attribute:Task Server Host')}/kinetic-task/app/api/v1/run-tree/${space('attribute:Task Source Name')}/Submissions/Workflow%20Router"
+  }
+]

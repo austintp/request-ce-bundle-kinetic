@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Console"
+  },
+  {
+    "name": "Content"
+  },
+  {
+    "name": "Datastore"
+  },
+  {
+    "name": "Service"
+  },
+  {
+    "name": "Subconsole"
+  },
+  {
+    "name": "Template"
+  },
+  {
+    "name": "Utility"
+  }
+]

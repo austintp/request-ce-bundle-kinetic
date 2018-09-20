@@ -1,0 +1,44 @@
+[
+  {
+    "event": "Created",
+    "filter": "space('attribute:Shared Workflow Engine').toLowerCase() === 'true' ? false : true",
+    "name": "Form Created",
+    "type": "Form",
+    "url": "${space('attribute:Task Server Scheme')}://${space('attribute:Task Server Host')}/kinetic-task/app/api/v1/run-tree/${space('attribute:Task Source Name')}/Forms/Workflow%20Router"
+  },
+  {
+    "event": "Deleted",
+    "filter": "space('attribute:Shared Workflow Engine').toLowerCase() === 'true' ? false : true",
+    "name": "Form Deleted",
+    "type": "Form",
+    "url": "${space('attribute:Task Server Scheme')}://${space('attribute:Task Server Host')}/kinetic-task/app/api/v1/run-tree/${space('attribute:Task Source Name')}/Forms/Workflow%20Router"
+  },
+  {
+    "event": "Updated",
+    "filter": "",
+    "name": "Form Updated",
+    "type": "Form",
+    "url": "${space('attribute:Task Server Scheme')}://${space('attribute:Task Server Host')}/kinetic-task/app/api/v1/run-tree/${space('attribute:Task Source Name')}/Forms/Workflow%20Router"
+  },
+  {
+    "event": "Created",
+    "filter": "",
+    "name": "Submission Created",
+    "type": "Submission",
+    "url": "${space('attribute:Task Server Scheme')}://${space('attribute:Task Server Host')}/kinetic-task/app/api/v1/run-tree/${space('attribute:Task Source Name')}/Submissions/Workflow%20Router"
+  },
+  {
+    "event": "Submitted",
+    "filter": "",
+    "name": "Submission Submitted",
+    "type": "Submission",
+    "url": "${space('attribute:Task Server Scheme')}://${space('attribute:Task Server Host')}/kinetic-task/app/api/v1/run-tree/${space('attribute:Task Source Name')}/Submissions/Workflow%20Router"
+  },
+  {
+    "event": "Updated",
+    "filter": "",
+    "name": "Submission Updated",
+    "type": "Submission",
+    "url": "${space('attribute:Task Server Scheme')}://${space('attribute:Task Server Host')}/kinetic-task/app/api/v1/run-tree/${space('attribute:Task Source Name')}/Submissions/Workflow%20Router"
+  }
+]

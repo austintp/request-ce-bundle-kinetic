@@ -28,7 +28,7 @@ export const Teams = ({ loading, teams, me, openRequestNewTeam }) => (
             <h1>Teams</h1>
           </div>
           {me.spaceAdmin ? (
-            <Link to="/teams/new" className="btn btn-secondary">
+            <Link to="/settings/teams/new" className="btn btn-secondary">
               Create New Team
             </Link>
           ) : (

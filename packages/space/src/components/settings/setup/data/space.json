@@ -1,0 +1,217 @@
+{
+  "afterLogoutPath": "",
+  "attributes": [
+    {
+      "name": "Admin Kapp Slug",
+      "values": [
+        "admin"
+      ]
+    },
+    {
+      "name": "Alerts Form Slug",
+      "values": [
+        "alerts"
+      ]
+    },
+    {
+      "name": "Approval Form Slug",
+      "values": [
+        "approval"
+      ]
+    },
+    {
+      "name": "Catalog Kapp Slug",
+      "values": [
+        "services"
+      ]
+    },
+    {
+      "name": "Change Manager Form Slug",
+      "values": [
+        "manager-change-request"
+      ]
+    },
+    {
+      "name": "Disable Self Sign Up",
+      "values": [
+        "false"
+      ]
+    },
+    {
+      "name": "Discussion Server Url",
+      "values": [
+        "https://<space-slug>.kinops.io/kinetic-response"
+      ]
+    },
+    {
+      "name": "Feedback Form Slug",
+      "values": [
+        "feedback"
+      ]
+    },
+    {
+      "name": "Footer Bundle Path",
+      "values": [
+        "space"
+      ]
+    },
+    {
+      "name": "Form Workflow",
+      "values": [
+        "Created - True",
+        "Deleted - True",
+        "Updated - True",
+        "Updated - Update Discussion META"
+      ]
+    },
+    {
+      "name": "Header Bundle Path",
+      "values": [
+        "space"
+      ]
+    },
+    {
+      "name": "Help Form Slug",
+      "values": [
+        "help"
+      ]
+    },
+    {
+      "name": "Hidden Users Regex",
+      "values": [
+        ".*@kinops.io$"
+      ]
+    },
+    {
+      "name": "Invite Others Form Slug",
+      "values": [
+        "kinops-invite-others"
+      ]
+    },
+    {
+      "name": "Libraries Bundle Path",
+      "values": [
+        "space"
+      ]
+    },
+    {
+      "name": "Queue Kapp Slug",
+      "values": [
+        "queue"
+      ]
+    },
+    {
+      "name": "Request Alert Form Slug",
+      "values": [
+        "kinops-request-an-alert"
+      ]
+    },
+    {
+      "name": "Service Days Due",
+      "values": [
+        "7"
+      ]
+    },
+    {
+      "name": "Shared Workflow Engine",
+      "values": [
+        "False"
+      ]
+    },
+    {
+      "name": "Submission Workflow",
+      "values": [
+        "Closed - False",
+        "Created - False",
+        "Deleted - False",
+        "Saved - False",
+        "Submitted - False",
+        "Updated - False"
+      ]
+    },
+    {
+      "name": "Suggest a Service Form Slug",
+      "values": [
+        "kinops-suggest-a-service"
+      ]
+    },
+    {
+      "name": "Task Assignee Team",
+      "values": [
+        "Default"
+      ]
+    },
+    {
+      "name": "Task Form Slug",
+      "values": [
+        "work-order"
+      ]
+    },
+    {
+      "name": "Task Server Host",
+      "values": [
+        "<space-slug>.kinops.io"
+      ]
+    },
+    {
+      "name": "Task Server Scheme",
+      "values": [
+        "https"
+      ]
+    },
+    {
+      "name": "Task Server Space Slug",
+      "values": [
+        "<space-slug>"
+      ]
+    },
+    {
+      "name": "Task Server Url",
+      "values": [
+        "https://<space-slug>.kinops.io/kinetic-task"
+      ]
+    },
+    {
+      "name": "Task Source Name",
+      "values": [
+        "Kinetic Request CE"
+      ]
+    },
+    {
+      "name": "Web Server Url",
+      "values": [
+        "https://<space-slug>.kinops.io"
+      ]
+    }
+  ],
+  "bundlePath": "",
+  "defaultDatastoreFormConfirmationPage": null,
+  "defaultDatastoreFormDisplayPage": null,
+  "displayType": "Single Page App",
+  "displayValue": "spa.jsp?location=https://s3.amazonaws.com/kinops.io/bundles/hydrogen/kinetic/v1",
+  "filestore": {
+    "filehubUrl": "https://kinops.io/kinetic-filehub",
+    "key": "TFTC110",
+    "slug": "ce-<space-slug>"
+  },
+  "loginPage": null,
+  "name": "<Space Name>",
+  "resetPasswordPage": null,
+  "securityPolicies": [
+    {
+      "endpoint": "Display",
+      "name": "Authenticated Users"
+    },
+    {
+      "endpoint": "Teams Access",
+      "name": "Authenticated Users"
+    },
+    {
+      "endpoint": "Users Access",
+      "name": "Authenticated Users"
+    }
+  ],
+  "sessionInactiveLimitInSeconds": 2592000,
+  "sharedBundleBase": "hydrogen-v1",
+  "slug": "<space-slug>"
+}

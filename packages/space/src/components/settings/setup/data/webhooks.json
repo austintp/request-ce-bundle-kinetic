@@ -1,0 +1,44 @@
+[
+  {
+    "event": "Membership Change",
+    "filter": "team('name') === 'Role::Employee'",
+    "name": "Employee Membership Change",
+    "type": "Team",
+    "url": "${space('attribute:Task Server Scheme')}://${space('attribute:Task Server Host')}/kinetic-task/app/api/v1/run-tree/${space('attribute:Task Source Name')}/Teams/Employee%20Membership%20Change"
+  },
+  {
+    "event": "Created",
+    "filter": "",
+    "name": "Team Created",
+    "type": "Team",
+    "url": "${space('attribute:Task Server Scheme')}://${space('attribute:Task Server Host')}/kinetic-task/app/api/v1/run-tree/${space('attribute:Task Source Name')}/Teams/Created"
+  },
+  {
+    "event": "Deleted",
+    "filter": "",
+    "name": "Team Deleted",
+    "type": "Team",
+    "url": "${space('attribute:Task Server Scheme')}://${space('attribute:Task Server Host')}/kinetic-task/app/api/v1/run-tree/${space('attribute:Task Source Name')}/Teams/Deleted"
+  },
+  {
+    "event": "Membership Change",
+    "filter": "!team('name').startsWith('Role::')",
+    "name": "Team Membership Change",
+    "type": "Team",
+    "url": "${space('attribute:Task Server Scheme')}://${space('attribute:Task Server Host')}/kinetic-task/app/api/v1/run-tree/${space('attribute:Task Source Name')}/Teams/Team%20Membership%20Change"
+  },
+  {
+    "event": "Updated",
+    "filter": "",
+    "name": "Team Updated",
+    "type": "Team",
+    "url": "${space('attribute:Task Server Scheme')}://${space('attribute:Task Server Host')}/kinetic-task/app/api/v1/run-tree/${space('attribute:Task Source Name')}/Teams/Updated"
+  },
+  {
+    "event": "Created",
+    "filter": "",
+    "name": "User Created",
+    "type": "User",
+    "url": "${space('attribute:Task Server Scheme')}://${space('attribute:Task Server Host')}/kinetic-task/app/api/v1/run-tree/${space('attribute:Task Source Name')}/Users/Created"
+  }
+]

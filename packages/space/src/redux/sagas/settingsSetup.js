@@ -1,9 +1,8 @@
-import { takeEvery, put, all, call, select } from 'redux-saga/effects';
+import { takeEvery, put, all, call, select, fork } from 'redux-saga/effects';
 import { CoreAPI } from 'react-kinetic-core';
 import { actions, types } from '../modules/settingsSetup';
 import { actions as errorActions } from '../modules/errors';
-import { Record, List } from 'immutable';
-import { cancelSaveTeamSaga } from './team';
+import { Record, List, fromJS } from 'immutable';
 
 export function* validateSetupSaga() {
   const { space, spaceServerError } = yield call(CoreAPI.fetchSpace, {
@@ -65,6 +64,36 @@ const attributeTypes = [
   'datastoreFormAttributeDefinitions',
 ];
 
+const selectCurrentProgress = state =>
+  state.space.settingsSetup.meta.attributeDefinitions.currentProgress;
+
+// Helpers
+function* requestAndPut(requestParameters) {
+  const { attributeDefinition, error, serverError } = yield call(
+    ...requestParameters,
+  );
+
+  if (error || serverError) {
+    yield put(
+      actions.setStepError('attributeDefinitions', error || serverError),
+    );
+  } else {
+    const currentProgress = yield select(selectCurrentProgress);
+    yield put(
+      actions.setStepCurrentProgress(
+        'attributeDefinitions',
+        currentProgress + 1,
+      ),
+    );
+    yield put(
+      actions.setStepAction(
+        'attributeDefinitions',
+        `Created Attribute Definition: ${attributeDefinition.name}`,
+      ),
+    );
+  }
+}
+
 export function* createAttrDefsSaga(action) {
   const requiredAttributeDefinitions = yield call(fetchAttributeDefintionFiles);
   const { space, spaceServerError } = yield call(CoreAPI.fetchSpace, {
@@ -91,31 +120,28 @@ export function* createAttrDefsSaga(action) {
       requiredAttributeDefinitions,
     );
 
-    // const attribueDefCalls = differences.map(type =>
-    //   call(CoreAPI.searchSubmissions, {
-    //     search: searchQuery.build(),
-    //     datastore: true,
-    //     form: form.slug,
-    //   }),
-    // );
-
-    console.log(Object.keys(differences.toObject()));
-
-    //    const calls = Object.keys(d)
-
-    // const attributeCalls = Object.keys(differences).map(type =>
-    //   call(CoreAPI.updateSpace(differences.toJS))
-    // )
-
-    //console.log(delta);
-
-    // yield put(
-    //   actions.setSetupInfo({
-    //     setupRequired,
-    //     packageVersion,
-    //     configuredPackageVersion,
-    //   }),
-    // );
+    const differenceCalls = Object.entries(differences.toJS())
+      .filter(([type, attributes]) => !!attributes.length)
+      .map(([type, attributes]) =>
+        attributes.map(attr =>
+          call(requestAndPut, [
+            CoreAPI.createAttributeDefinition,
+            {
+              attributeType: type,
+              attributeDefinition: attr,
+            },
+          ]),
+        ),
+      )
+      .reduce((acc, val) => acc.concat(val), []);
+    yield put(
+      actions.setStepTotalProgress(
+        'attributeDefinitions',
+        differenceCalls.length,
+      ),
+    );
+    yield all(differenceCalls);
+    yield put(actions.setStepC);
   }
 }
 

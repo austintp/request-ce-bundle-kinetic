@@ -1,8 +1,7 @@
 [
   {
     "allowsMultiple": false,
-    "description":
-      "True or False if this team should be used in Queue Kapp Assignments",
+    "description": "True or False if this team should be used in Queue Kapp Assignments",
     "name": "Assignable"
   },
   {

@@ -1,26 +1,27 @@
 [
   {
     "allowsMultiple": false,
-    "description":
-      "User's Department.  Updates through a request from the user profile screen.",
-    "name": "Department"
+    "description": "",
+    "name": "First Name"
+  },
+  {
+    "allowsMultiple": true,
+    "description": "Used to configure which guided tour should be displayed",
+    "name": "Guided Tour"
   },
   {
     "allowsMultiple": false,
-    "description":
-      "User's manager.  Updates through a request from the user profile screen.",
-    "name": "Manager"
+    "description": "",
+    "name": "Last Name"
   },
   {
     "allowsMultiple": false,
-    "description":
-      "User's organization. Updates through a request from the user profile screen.",
-    "name": "Organization"
+    "description": null,
+    "name": "Phone Number"
   },
   {
-    "allowsMultiple": false,
-    "description":
-      "User's Site. Updates through a request from the user profile screen.",
-    "name": "Site"
+    "allowsMultiple": true,
+    "description": "Personal Filters used within the Queue Kapp.",
+    "name": "Queue Personal Filters"
   }
 ]

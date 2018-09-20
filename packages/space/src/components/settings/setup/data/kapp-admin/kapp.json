@@ -1,0 +1,108 @@
+{
+  "afterLogoutPath": null,
+  "attributes": [
+    {
+      "name": "Bundle Package",
+      "values": [
+        "space"
+      ]
+    },
+    {
+      "name": "Description",
+      "values": [
+        "Configure and manage system functions"
+      ]
+    },
+    {
+      "name": "Icon",
+      "values": [
+        "fa-gear"
+      ]
+    },
+    {
+      "name": "Kapp Configuration Status",
+      "values": [
+        "true"
+      ]
+    },
+    {
+      "name": "Notification Template Name - Complete",
+      "values": [
+        "Service Completed"
+      ]
+    },
+    {
+      "name": "Notification Template Name - Create",
+      "values": [
+        "Service Submitted"
+      ]
+    },
+    {
+      "name": "Statuses - Active",
+      "values": [
+        "Active"
+      ]
+    },
+    {
+      "name": "Statuses - Inactive",
+      "values": [
+        "Inactive"
+      ]
+    },
+    {
+      "name": "Submission Workflow",
+      "values": [
+        "Closed - False",
+        "Created - False",
+        "Deleted - False",
+        "Saved - False",
+        "Submitted - False",
+        "Updated - False"
+      ]
+    }
+  ],
+  "bundlePath": "admin",
+  "defaultFormConfirmationPage": null,
+  "defaultFormDisplayPage": null,
+  "defaultSubmissionLabelExpression": "",
+  "displayType": "Display Page",
+  "displayValue": null,
+  "loginPage": null,
+  "name": "Admin",
+  "resetPasswordPage": null,
+  "securityPolicies": [
+    {
+      "endpoint": "Display",
+      "name": "Authenticated Users"
+    },
+    {
+      "endpoint": "Form Creation",
+      "name": "Data Admins"
+    },
+    {
+      "endpoint": "Modification",
+      "name": "Admins"
+    },
+    {
+      "endpoint": "Default Form Display",
+      "name": "Admins"
+    },
+    {
+      "endpoint": "Default Form Modification",
+      "name": "Admins"
+    },
+    {
+      "endpoint": "Default Submission Access",
+      "name": "Admins"
+    },
+    {
+      "endpoint": "Default Submission Modification",
+      "name": "Admins"
+    },
+    {
+      "endpoint": "Submission Support",
+      "name": "Submission Support"
+    }
+  ],
+  "slug": "admin"
+}
