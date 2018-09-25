@@ -19,6 +19,8 @@ export function* validateSetupSaga() {
       space.attributes['Bundle Package Version'] &&
       space.attributes['Bundle Package Version'][0];
 
+    console.log(packageVersion, configuredPackageVersion);
+
     const setupRequired = packageVersion !== configuredPackageVersion;
     yield put(
       actions.setSetupInfo({

@@ -21,102 +21,108 @@ import { TeamContainer } from './components/teams/TeamContainer';
 import { TeamsContainer } from './components/teams/TeamsContainer';
 import { IsolatedForm } from './components/shared/IsolatedForm';
 import { FormList } from './components/default_kapp/FormList';
-import { Wizard } from './components/settings/setup/Wizard';
+import { Wizard as SetupWizard } from './components/settings/setup/Wizard';
 import './assets/styles/master.scss';
 
 export const AppComponent = props => {
   if (props.loading) {
     return <Loading text="App is loading ..." />;
   }
-  return props.render({
-    sidebar: !props.isGuest &&
-      !props.setupRequired && (
-        <Switch>
-          <Route
-            path="/settings"
-            render={() => (
-              <SettingsSidebar settingsBackPath={props.settingsBackPath} />
-            )}
-          />
-          <Route
-            render={() => (
-              <Sidebar
-                kapps={props.kapps}
-                teams={props.teams}
-                isSpaceAdmin={props.isSpaceAdmin}
-                openSettings={props.openSettings}
-              />
-            )}
-          />
-        </Switch>
-      ),
-    main: (
-      <Fragment>
-        <Notifications />
-        <main className="package-layout package-layout--space">
-          {props.setupRequired ? (
-            <Wizard />
-          ) : (
-            <Switch>
-              <Route path="/" exact component={Home} />
-              <Route path="/about" exact component={About} />
-              <Route path="/alerts" exact component={Alerts} />
-              <Route path="/alerts/:id" exact component={AlertForm} />
-              <Route path="/discussions/:id" exact component={Discussion} />
-              <Route path="/profile/:username" exact component={ViewProfile} />
-              <Route path="/settings" component={Settings} />
-              <Route path="/teams" exact component={TeamsContainer} />
-              <Route path="/teams/:slug" exact component={TeamContainer} />
-              <Route path="/kapps/:kappSlug" exact component={FormList} />
-              <Route
-                path="/kapps/:kappSlug/forms/:formSlug"
-                exact
-                component={IsolatedForm}
-              />
-              <Route
-                path="/kapps/:kappSlug/submissions/:id"
-                exact
-                component={IsolatedForm}
-              />
-              <Route
-                path="/kapps/:kappSlug/forms/:formSlug/submissions/:id"
-                exact
-                component={IsolatedForm}
-              />
-              <Route
-                path="/datastore/forms/:slug/submissions/:id"
-                render={({ match }) => (
-                  <Redirect
-                    to={`/settings/datastore/${match.params.slug}/${
-                      match.params.id
-                    }`}
-                  />
-                )}
-              />
-              <Route
-                path="/datastore/forms/:slug"
-                render={({ match }) => (
-                  <Redirect
-                    to={`/settings/datastore/${match.params.slug}/new`}
-                  />
-                )}
-              />
-              <Route
-                path="/reset-password"
-                render={() => <Redirect to="/" />}
-              />
-              <Route component={ErrorNotFound} />
-            </Switch>
-          )}
-        </main>
-      </Fragment>
-    ),
-  });
+  return (
+    <SetupWizard
+      setupCompleted={props.setupCompleted}
+      setSetupCompleted={props.setSetupCompleted}
+    >
+      {props.render({
+        sidebar: !props.isGuest && (
+          <Switch>
+            <Route
+              path="/settings"
+              render={() => (
+                <SettingsSidebar settingsBackPath={props.settingsBackPath} />
+              )}
+            />
+            <Route
+              render={() => (
+                <Sidebar
+                  kapps={props.kapps}
+                  teams={props.teams}
+                  isSpaceAdmin={props.isSpaceAdmin}
+                  openSettings={props.openSettings}
+                />
+              )}
+            />
+          </Switch>
+        ),
+        main: (
+          <Fragment>
+            <Notifications />
+            <main className="package-layout package-layout--space">
+              <Switch>
+                <Route path="/" exact component={Home} />
+                <Route path="/about" exact component={About} />
+                <Route path="/alerts" exact component={Alerts} />
+                <Route path="/alerts/:id" exact component={AlertForm} />
+                <Route path="/discussions/:id" exact component={Discussion} />
+                <Route
+                  path="/profile/:username"
+                  exact
+                  component={ViewProfile}
+                />
+                <Route path="/settings" component={Settings} />
+                <Route path="/teams" exact component={TeamsContainer} />
+                <Route path="/teams/:slug" exact component={TeamContainer} />
+                <Route path="/kapps/:kappSlug" exact component={FormList} />
+                <Route
+                  path="/kapps/:kappSlug/forms/:formSlug"
+                  exact
+                  component={IsolatedForm}
+                />
+                <Route
+                  path="/kapps/:kappSlug/submissions/:id"
+                  exact
+                  component={IsolatedForm}
+                />
+                <Route
+                  path="/kapps/:kappSlug/forms/:formSlug/submissions/:id"
+                  exact
+                  component={IsolatedForm}
+                />
+                <Route
+                  path="/datastore/forms/:slug/submissions/:id"
+                  render={({ match }) => (
+                    <Redirect
+                      to={`/settings/datastore/${match.params.slug}/${
+                        match.params.id
+                      }`}
+                    />
+                  )}
+                />
+                <Route
+                  path="/datastore/forms/:slug"
+                  render={({ match }) => (
+                    <Redirect
+                      to={`/settings/datastore/${match.params.slug}/new`}
+                    />
+                  )}
+                />
+                <Route
+                  path="/reset-password"
+                  render={() => <Redirect to="/" />}
+                />
+                <Route component={ErrorNotFound} />
+              </Switch>
+            </main>
+          </Fragment>
+        ),
+      })}
+    </SetupWizard>
+  );
 };
 
 export const mapStateToProps = state => ({
   loading: state.space.spaceApp.appLoading,
-  setupRequired: state.space.settingsSetup.setupRequired,
+  setupCompleted: state.space.spaceApp.setupCompleted,
   kapps: state.app.kapps
     .sort((a, b) => a.name.localeCompare(b.name))
     .filter(kapp => kapp.slug !== 'admin'),
@@ -131,7 +137,7 @@ export const mapStateToProps = state => ({
 const mapDispatchToProps = {
   fetchSettings: actions.fetchAppSettings,
   setSettingsBackPath: actions.setSettingsBackPath,
-  validateSetup: setupActions.validateSetup,
+  setSetupCompleted: actions.setSetupCompleted,
 };
 
 export const App = compose(
@@ -145,7 +151,6 @@ export const App = compose(
   lifecycle({
     componentWillMount() {
       this.props.fetchSettings();
-      this.props.validateSetup();
     },
   }),
 )(AppComponent);

@@ -25,6 +25,7 @@ export const types = {
   CREATE_DISCUSSION: namespace('app', 'CREATE_DISCUSSION'),
   DELETE_ALERT: namespace('app', 'DELETE_ALERT'),
   SET_SETTINGS_BACK_PATH: namespace('app', 'SET_SETTINGS_BACK_PATH'),
+  SET_SETUP_COMPLETED: namespace('app', 'SET_SETUP_COMPLETED'),
 };
 
 export const actions = {
@@ -47,6 +48,7 @@ export const actions = {
   createDiscussion: withPayload(types.CREATE_DISCUSSION),
   deleteAlert: withPayload(types.DELETE_ALERT),
   setSettingsBackPath: withPayload(types.SET_SETTINGS_BACK_PATH),
+  setSetupCompleted: withPayload(types.SET_SETUP_COMPLETED),
 };
 
 export const selectHasSharedTaskEngine = state =>
@@ -92,6 +94,7 @@ export const State = Record({
   userAttributeDefinitions: {},
   userProfileAttributeDefinitions: {},
   settingsBackPath: null,
+  setupCompleted: false,
 });
 
 export const reducer = (state = State(), { type, payload }) => {
@@ -133,6 +136,8 @@ export const reducer = (state = State(), { type, payload }) => {
       return state.set('discussionsSearchTerm', payload);
     case types.SET_SETTINGS_BACK_PATH:
       return state.set('settingsBackPath', payload);
+    case types.SET_SETUP_COMPLETED:
+      return state.set('setupCompleted', payload);
     default:
       return state;
   }
