@@ -21,3 +21,9 @@
     z-index: 9998;
   }
 }
+
+.article-markdown {
+  p:not(:first-of-type) {
+    display: none;
+  }
+}

@@ -17,6 +17,7 @@ import { FormContainer } from './components/form/FormContainer';
 import { FormListContainer } from './components/form_list/FormListContainer';
 import { RequestListContainer } from './components/request_list/RequestListContainer';
 import { RequestShowContainer } from './components/request/RequestShowContainer';
+import { KnowledgeShow } from './components/knowledge/KnowledgeShow';
 import { Settings } from './components/settings/Settings';
 import { displayableFormPredicate } from './utils';
 
@@ -138,6 +139,7 @@ export const AppComponent = props => {
           path="/requests/:type?/request/:submissionId/:mode"
           component={RequestShowContainer}
         />
+        <Route exact path="/articles/:id/:query?" component={KnowledgeShow} />
       </main>
     ),
   });

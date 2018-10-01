@@ -25,6 +25,7 @@ import { actions as modalFormActions } from './redux/modules/modalForm';
 
 import * as Utils from './utils';
 import * as Constants from './constants';
+import * as KnowledgeManagement from './knowledgeManagement';
 
 export {
   KappLink,
@@ -47,6 +48,7 @@ export {
   selectCurrentKapp,
   Utils,
   Constants,
+  KnowledgeManagement,
   ErrorNotFound,
   ErrorUnauthorized,
   ErrorUnexpected,

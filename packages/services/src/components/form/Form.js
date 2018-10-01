@@ -7,6 +7,7 @@ import {
   ErrorUnexpected,
   PageTitle,
 } from 'common';
+import { ArticleCard } from '../shared/ArticleCard';
 
 // Asynchronously import the global dependencies that are used in the embedded
 // forms. Note that we deliberately do this as a const so that it should start
@@ -25,6 +26,7 @@ export const Form = ({
   handleDelete,
   values,
   kappSlug,
+  articles,
 }) => (
   <Fragment>
     <PageTitle parts={[form ? form.name : '']} />
@@ -67,6 +69,18 @@ export const Form = ({
       <div className="form-description">
         {form && <p>{form.description}</p>}
       </div>
+      {articles.size > 0 && (
+        <div>
+          <h4>Related Articles</h4>
+          {articles.map(article => (
+            <ArticleCard
+              key={article.id}
+              path={`/articles/${article.id}`}
+              article={article}
+            />
+          ))}
+        </div>
+      )}
       <div className="embedded-core-form--wrapper">
         {submissionId ? (
           <CoreForm

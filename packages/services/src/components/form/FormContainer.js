@@ -8,6 +8,7 @@ import {
   withProps,
 } from 'recompose';
 import { parse } from 'query-string';
+import { KnowledgeManagement } from 'common';
 import { Form } from './Form';
 import { actions } from '../../redux/modules/submission';
 import { actions as submissionsActions } from '../../redux/modules/submissions';
@@ -85,11 +86,19 @@ const enhance = compose(
   ),
   withState('submissionId', 'setSubmissionId', getSubmissionId),
   withState('formSlug', 'setFormSlug', props => props.match.params.formSlug),
+  withState('articles', 'setArticles', []),
   withProps(props => ({
     form: props.forms.find(form => form.slug === props.formSlug),
   })),
   withHandlers({ handleCompleted, handleCreated, handleLoaded, handleDelete }),
   lifecycle({
+    componentWillMount() {
+      KnowledgeManagement.fetchKnowledgeArticles(
+        `kapp::${this.props.kappSlug}::form::${this.props.formSlug}`,
+        this.props.setArticles,
+        true,
+      );
+    },
     componentWillReceiveProps(nextProps) {
       if (
         this.props.match.params.formSlug !== nextProps.match.params.formSlug
@@ -101,6 +110,13 @@ const enhance = compose(
         nextProps.match.params.submissionId
       ) {
         this.props.setSubmissionId(nextProps.match.params.submissionId);
+      }
+      if (this.props.formSlug !== nextProps.formSlug) {
+        KnowledgeManagement.fetchKnowledgeArticles(
+          `kapp::${nextProps.kappSlug}::form::${nextProps.formSlug}`,
+          nextProps.setArticles,
+          true,
+        );
       }
     },
   }),
