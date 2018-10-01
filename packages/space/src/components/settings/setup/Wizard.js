@@ -10,7 +10,7 @@ import { Utils, PageTitle } from 'common';
 import { actions } from '../../../redux/modules/settingsSetup';
 import { version as packageVersion } from '../../../../package.json';
 import { Overview } from './1_Overview';
-import { EvaluateMissing } from './2_EvaluateMissing';
+import { Dependencies } from './2_Dependencies';
 
 const validatePackageVersion = async ({
   setSetupCompleted,
@@ -20,28 +20,27 @@ const validatePackageVersion = async ({
   setSetupObject,
 }) => {
   // Fetch the Space to determine Bundle Package Version
-  (await kappSlug)
-    ? CoreAPI.fetchKapp({ kappSlug, include: 'attributesMap' })
-    : CoreAPI.fetchSpace({
-        include: 'attributes',
-      }).then(data => {
-        // Determine if Wizard interacting with Space or Kapp
-        const setupObject = kappSlug === null ? data.space : data.kapp;
-        // Get the configured package version of the Space or Kapp
-        const configuredPackageVersion = Utils.getAttributeValue(
-          setupObject,
-          'Bundle Package Version',
-          null,
-        );
-        // Set the Bundle Package Version into Component State
-        setConfiguredPackageVersion(configuredPackageVersion);
-        // Set the Space Export into Component State
-        setSetupObject(setupObject);
-        // Determine if Setup is Required
-        const needsSetup = configuredPackageVersion !== packageVersion;
-        // If Setup Required, set setup required, otherwise dispatch setupCompleted and store in redux
-        needsSetup ? setSetupRequired(needsSetup) : setSetupCompleted(true);
-      });
+  ((await kappSlug) === null
+    ? CoreAPI.fetchSpace({ include: 'attributes' })
+    : CoreAPI.fetchKapp({ kappSlug, include: 'attributes' })
+  ).then(data => {
+    // Determine if Wizard interacting with Space or Kapp
+    const setupObject = kappSlug === null ? data.space : data.kapp;
+    // Get the configured package version of the Space or Kapp
+    const configuredPackageVersion = Utils.getAttributeValue(
+      setupObject,
+      'Bundle Package Version',
+      null,
+    );
+    // Set the Bundle Package Version into Component State
+    setConfiguredPackageVersion(configuredPackageVersion);
+    // Set the Space Export into Component State
+    setSetupObject(setupObject);
+    // Determine if Setup is Required
+    const needsSetup = configuredPackageVersion !== packageVersion;
+    // If Setup Required, set setup required, otherwise dispatch setupCompleted and store in redux
+    needsSetup ? setSetupRequired(needsSetup) : setSetupCompleted(true);
+  });
 };
 
 export const WizardComponent = ({
@@ -73,7 +72,13 @@ export const WizardComponent = ({
               setupObject={setupObject}
               kappSlug={kappSlug}
             />
-            <EvaluateMissing />
+            <Dependencies
+              configuredPackageVersion={configuredPackageVersion}
+              packageVersion={packageVersion}
+              setSetupObject={setSetupObject}
+              setupObject={setupObject}
+              kappSlug={kappSlug}
+            />
           </StepWizard>
         </ModalBody>
         <ModalFooter />

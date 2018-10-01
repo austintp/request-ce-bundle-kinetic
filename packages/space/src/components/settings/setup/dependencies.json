@@ -153,6 +153,11 @@
       {
         "allowsMultiple": false,
         "description": "Slug of this spaces Admin Kapp (typically admin)",
+        "name": "Bundle Package Version"
+      },
+      {
+        "allowsMultiple": false,
+        "description": "Slug of this spaces Admin Kapp (typically admin)",
         "name": "Admin Kapp Slug"
       },
       {
