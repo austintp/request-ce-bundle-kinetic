@@ -32,7 +32,7 @@ pipeline {
     }
     stage('Upload to S3') {
       when {
-        anyOf {branch 'master'; branch 'develop'; branch 'feature/kinetic-discussions'}
+        anyOf {branch 'master'; branch 'develop'; branch 'feature/kinetic-discussions'; branch 'feature/knowledge-management'}
       }
       steps {
         script {
