@@ -59,11 +59,11 @@ const FormListComponent = ({
               <Link to="/kapps/services">services</Link> /{` `}
               <Link to="/kapps/services/settings">settings</Link> /{` `}
             </h3>
-            <h1>Services Forms</h1>
+            <h1>Forms</h1>
           </div>
           {isSpaceAdmin && (
             <Link to={`${match.path}/new`} className="btn btn-primary">
-              Create Form
+              New Form
             </Link>
           )}
         </div>
@@ -127,6 +127,12 @@ const FormListComponent = ({
                                 >
                                   Configure Form
                                 </DropdownItem>
+                                <DropdownItem
+                                  tag={Link}
+                                  to={`${match.path}/clone/${form.slug}/`}
+                                >
+                                  Clone Form
+                                </DropdownItem>
                               </DropdownMenu>
                             </Dropdown>
                           )}
@@ -136,22 +142,46 @@ const FormListComponent = ({
                   })}
                 </tbody>
               </table>
-              <ul className="pull-right">
-                {pageNumbers.map(number => (
-                  <li
-                    key={number}
-                    id={number}
-                    onClick={() => setCurrentPage(number)}
-                    className={
-                      currentPage === number
-                        ? 'btn btn-primary'
-                        : 'btn btn-default'
-                    }
-                  >
-                    {number}
+              <nav aria-label="Page navigation">
+                <ul className="pagination">
+                  <li className="page-item disabled">
+                    <a className="page-link" aria-label="Previous">
+                      <span className="icon">
+                        <span
+                          className="fa fa-fw fa-caret-left"
+                          aria-hidden="true"
+                        />
+                      </span>
+                      <span className="sr-only">Previous</span>
+                    </a>
                   </li>
-                ))}
-              </ul>
+                  {pageNumbers.map(number => (
+                    <li
+                      key={number}
+                      id={number}
+                      onClick={() => setCurrentPage(number)}
+                      className={
+                        currentPage === number
+                          ? 'page-item active'
+                          : 'page-item'
+                      }
+                    >
+                      <a className="page-link">{number}</a>
+                    </li>
+                  ))}
+                  <li className="page-item disabled">
+                    <a className="page-link" aria-label="next">
+                      <span className="icon">
+                        <span
+                          className="fa fa-fw fa-caret-right"
+                          aria-hidden="true"
+                        />
+                      </span>
+                      <span className="sr-only">Next</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
             </div>
           ) : (
             <WallyEmptyMessage />

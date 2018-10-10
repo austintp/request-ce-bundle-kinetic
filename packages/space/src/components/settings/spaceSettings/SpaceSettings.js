@@ -1,96 +1,30 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { compose, lifecycle, withState } from 'recompose';
-import { Utils, PageTitle } from 'common';
-import { actions } from '../../../redux/modules/settingsSpace';
+import { Map, List, fromJS } from 'immutable';
+import { compose, lifecycle, withState, withHandlers } from 'recompose';
+import { CoreAPI } from 'react-kinetic-core';
 
-export const TextInput = ({ value, name, setInputs, inputs }) => (
-  <input
-    name={name}
-    value={value}
-    type="text"
-    onChange={event => setInputs({ ...inputs, [name]: event.target.value })}
-  />
-);
-export const NumberInput = ({ value, name, setInputs, inputs, className }) => (
-  <input
-    className={`form-control ${className}`}
-    name={name}
-    value={value}
-    type="number"
-    onChange={event => setInputs({ ...inputs, [name]: event.target.value })}
-  />
-);
-export const Select = ({
-  selected,
-  name,
-  type,
-  data,
-  setInputs,
-  inputs,
-  className,
+import {
+  commonActions,
+  toastActions,
+  PageTitle,
+  AttributeSelectors,
+} from 'common';
+
+export const SettingsComponent = ({
+  attributesMap,
+  handleAttributeChange,
+  attributesMapDifferences,
+  requiredKapps,
+  spaceName,
+  previousSpaceName,
+  handleNameChange,
+  updateSettings,
 }) => {
-  let optionElements = '<option></option>';
-  let options;
-  if (data) {
-    if (type === 'teams') {
-      options = data.filter(team => !team.name.includes('Role')).map(team => {
-        return { value: team.name, label: team.name };
-      });
-    } else {
-      let selectedKapp = data.kapps.find(kapp => kapp.slug === type);
-      options = !selectedKapp
-        ? []
-        : selectedKapp.forms.map(form => {
-            return { value: form.slug, label: form.name };
-          });
-    }
-    optionElements = options.map(option => {
-      const kappName = type.charAt(0).toUpperCase() + type.slice(1);
-      return (
-        <option key={option.value} value={option.value}>
-          {kappName} > {option.label}
-        </option>
-      );
-    });
-  }
   return (
-    <select
-      className={`form-control ${className}`}
-      name={name}
-      value={selected}
-      onChange={event => setInputs({ ...inputs, [name]: event.target.value })}
-    >
-      {optionElements}
-    </select>
-  );
-};
-
-const mapStateToProps = state => ({
-  space: state.app.space,
-  spaceSettings: state.space.settingsSpace,
-  teams: state.space.settingsSpace.teams,
-  spaceKappsForms: state.space.settingsSpace.spaceKappsForms,
-});
-
-const mapDispatchToProps = {
-  updateSpace: actions.updateSpace,
-  fetchSpaceSettings: actions.fetchSpaceSettings,
-  fetchSpaceSettingsTeams: actions.fetchSpaceSettingsTeams,
-};
-
-export const SettingsContainer = ({
-  updateSpace,
-  space,
-  teams,
-  spaceKappsForms,
-  inputs,
-  setInputs,
-}) => (
-  <div>
-    <PageTitle parts={['Space Settings']} />
     <div className="page-container page-container--space-settings">
+      <PageTitle parts={['System Settings']} />
       <div className="page-panel page-panel--scrollable page-panel--space-profile-edit">
         <div className="page-title">
           <div className="page-title__wrapper">
@@ -103,150 +37,168 @@ export const SettingsContainer = ({
         </div>
         <section>
           <form>
+            <h2 className="section__title">Display Options</h2>
+            <div className="form-group">
+              <label>Space Name</label>
+              <small>
+                The Name of the Space Referenced Throughout the System
+              </small>
+              <input
+                type="text"
+                className="form-control"
+                value={spaceName}
+                onChange={handleNameChange}
+              />
+            </div>
+            {attributesMap.has('Default Kapp Display') && (
+              <AttributeSelectors.KappSelect
+                id="Default Kapp Display"
+                value={attributesMap.getIn(['Default Kapp Display', 'value'])}
+                onChange={handleAttributeChange}
+                valueMapper={value => value.kapp.slug}
+                placeholder="--Home--"
+                label="Default Kapp Display"
+                description={attributesMap.getIn([
+                  'Default Kapp Display',
+                  'description',
+                ])}
+              />
+            )}
             <h2 className="section__title">Workflow Options</h2>
-            {Utils.getAttributeValue(space, 'Approval Days Due') && (
-              <div className="form-group">
-                <label>Approval Days Due</label>
-                <NumberInput
-                  value={inputs['Approval Days Due']}
-                  name="Approval Days Due"
-                  setInputs={setInputs}
-                  inputs={inputs}
-                  className="col-2"
-                />
-              </div>
+            {attributesMap.has('Service Days Due') && (
+              <AttributeSelectors.IntegerSelect
+                id="Service Days Due"
+                value={attributesMap.getIn(['Service Days Due', 'value'])}
+                onChange={handleAttributeChange}
+                label="Default Service Days Due"
+                description={attributesMap.getIn([
+                  'Service Days Due',
+                  'description',
+                ])}
+              />
             )}
-            {Utils.getAttributeValue(space, 'Service Days Due') && (
-              <div className="form-group">
-                <label>Service Days Due</label>
-                <NumberInput
-                  value={inputs['Service Days Due']}
-                  name="Service Days Due"
-                  setInputs={setInputs}
-                  inputs={inputs}
-                  className="col-2"
-                />
-              </div>
-            )}
-            {Utils.getAttributeValue(space, 'Task Days Due') && (
-              <div className="form-group">
-                <label>Task Days Due</label>
-                <NumberInput
-                  value={inputs['Task Days Due']}
-                  name="Task Days Due"
-                  setInputs={setInputs}
-                  inputs={inputs}
-                  className="col-2"
-                />
-              </div>
-            )}
-            <h2 className="section__title">Default Task Team</h2>
-            {Utils.getAttributeValue(space, 'Task Assignee Team') && (
-              <div className="form-group">
-                <label>Task Assignee Team</label>
-                <Select
-                  selected={inputs['Task Assignee Team']}
-                  name="Task Days Due"
-                  type="teams"
-                  data={teams}
-                  setInputs={setInputs}
-                  inputs={inputs}
-                  className="col-8"
-                />
-              </div>
+            {attributesMap.has('Task Assignee Team') && (
+              <AttributeSelectors.TeamSelect
+                id="Task Assignee Team"
+                value={attributesMap.getIn(['Task Assignee Team', 'value'])}
+                onChange={handleAttributeChange}
+                valueMapper={value => value.team.name}
+                label="Task Assignee Team"
+                description={attributesMap.getIn([
+                  'Task Assignee Team',
+                  'description',
+                ])}
+              />
             )}
             <h2 className="section__title">Form Mapping</h2>
-            {Utils.getAttributeValue(space, 'Approval Form Slug') && (
-              <div className="form-group">
-                <label>Approval Form</label>
-                <Select
-                  selected={inputs['Approval Form Slug']}
-                  name="Approval Form Slug"
-                  type="queue"
-                  data={spaceKappsForms}
-                  setInputs={setInputs}
-                  inputs={inputs}
-                  className="col-8"
+            {requiredKapps.queue &&
+              attributesMap.has('Approval Form Slug') && (
+                <AttributeSelectors.FormSelect
+                  id="Approval Form Slug"
+                  value={attributesMap.getIn(['Approval Form Slug', 'value'])}
+                  onChange={handleAttributeChange}
+                  valueMapper={value => value.slug}
+                  kappSlug={requiredKapps.queue.slug}
+                  label="Default Approval Form"
+                  description={attributesMap.getIn([
+                    'Approval Form Slug',
+                    'description',
+                  ])}
                 />
-              </div>
-            )}
-            {Utils.getAttributeValue(space, 'Feedback Form Slug') && (
-              <div className="form-group">
-                <label>Feedback Form</label>
-                <Select
-                  selected={inputs['Feedback Form Slug']}
-                  name="Feedback Form Slug"
-                  type="admin"
-                  data={spaceKappsForms}
-                  setInputs={setInputs}
-                  inputs={inputs}
-                  className="col-8"
+              )}
+            {requiredKapps.admin &&
+              attributesMap.has('Feedback Form Slug') && (
+                <AttributeSelectors.FormSelect
+                  id="Feedback Form Slug"
+                  value={attributesMap.getIn(['Feedback Form Slug', 'value'])}
+                  onChange={handleAttributeChange}
+                  valueMapper={value => value.slug}
+                  kappSlug={requiredKapps.admin.slug}
+                  label="Feedback Form Slug"
+                  description={attributesMap.getIn([
+                    'Feedback Form Slug',
+                    'description',
+                  ])}
                 />
-              </div>
-            )}
-            {Utils.getAttributeValue(space, 'Help Form Slug') && (
-              <div className="form-group">
-                <label>Help Form</label>
-                <Select
-                  selected={inputs['Help Form Slug']}
-                  name="Help Form Slug"
-                  type="admin"
-                  data={spaceKappsForms}
-                  setInputs={setInputs}
-                  inputs={inputs}
-                  className="col-8"
+              )}
+            {requiredKapps.admin &&
+              attributesMap.has('Help Form Slug') && (
+                <AttributeSelectors.FormSelect
+                  id="Help Form Slug"
+                  value={attributesMap.getIn(['Help Form Slug', 'value'])}
+                  onChange={handleAttributeChange}
+                  valueMapper={value => value.slug}
+                  kappSlug={requiredKapps.admin.slug}
+                  label="Help Form Slug"
+                  description={attributesMap.getIn([
+                    'Help Form Slug',
+                    'description',
+                  ])}
                 />
-              </div>
-            )}
-            {Utils.getAttributeValue(space, 'Request Alert Form Slug') && (
-              <div className="form-group">
-                <label>Request Alert Form</label>
-                <Select
-                  selected={inputs['Request Alert Form Slug']}
-                  name="Request Alert Form Slug"
-                  type="admin"
-                  data={spaceKappsForms}
-                  setInputs={setInputs}
-                  inputs={inputs}
-                  className="col-8"
+              )}
+            {requiredKapps.admin &&
+              attributesMap.has('Request Alert Form Slug') && (
+                <AttributeSelectors.FormSelect
+                  id="Request Alert Form Slug"
+                  value={attributesMap.getIn([
+                    'Request Alert Form Slug',
+                    'value',
+                  ])}
+                  onChange={handleAttributeChange}
+                  valueMapper={value => value.slug}
+                  kappSlug={requiredKapps.admin.slug}
+                  label="Request Alert Form Slug"
+                  description={attributesMap.getIn([
+                    'Request Alert Form Slug',
+                    'description',
+                  ])}
                 />
-              </div>
-            )}
-            {Utils.getAttributeValue(space, 'Suggest a Service Form Slug') && (
-              <div className="form-group">
-                <label>Suggest a Service Form</label>
-                <Select
-                  selected={inputs['Suggest a Service Form Slug']}
-                  name="Suggest a Service Form Slug"
-                  type="services"
-                  data={spaceKappsForms}
-                  setInputs={setInputs}
-                  inputs={inputs}
-                  className="col-8"
+              )}
+            {requiredKapps.services &&
+              attributesMap.has('Suggest a Service Form Slug') && (
+                <AttributeSelectors.FormSelect
+                  id="Suggest a Service Form Slug"
+                  value={attributesMap.getIn([
+                    'Suggest a Service Form Slug',
+                    'value',
+                  ])}
+                  onChange={handleAttributeChange}
+                  valueMapper={value => value.slug}
+                  kappSlug={requiredKapps.services.slug}
+                  label="Suggest a Service Form Slug"
+                  description={attributesMap.getIn([
+                    'Suggest a Service Form Slug',
+                    'description',
+                  ])}
                 />
-              </div>
-            )}
-            {Utils.getAttributeValue(space, 'Task Form Slug') && (
-              <div className="form-group">
-                <label>Task Form</label>
-                <Select
-                  selected={inputs['Task Form Slug']}
-                  name="Task Form Slug"
-                  type="queue"
-                  data={spaceKappsForms}
-                  setInputs={setInputs}
-                  inputs={inputs}
-                  className="col-8"
+              )}
+            {requiredKapps.queue &&
+              attributesMap.has('Task Form Slug') && (
+                <AttributeSelectors.FormSelect
+                  id="Task Form Slug"
+                  value={attributesMap.getIn(['Task Form Slug', 'value'])}
+                  onChange={handleAttributeChange}
+                  valueMapper={value => value.slug}
+                  kappSlug={requiredKapps.queue.slug}
+                  label="Default Task Form Slug"
+                  description={attributesMap.getIn([
+                    'Task Form Slug',
+                    'description',
+                  ])}
                 />
-              </div>
-            )}
+              )}
           </form>
           <div className="form__footer">
             <span className="form__footer__right">
               <button
                 className="btn btn-primary"
-                onClick={() => updateSpace(inputs)}
-                // TODO: Disable until a change is made.
+                onClick={updateSettings}
+                disabled={
+                  !(
+                    attributesMapDifferences.size !== 0 ||
+                    spaceName !== previousSpaceName
+                  )
+                }
               >
                 Save Changes
               </button>
@@ -255,48 +207,161 @@ export const SettingsContainer = ({
         </section>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
+const SPACE_INCLUDES = 'attributesMap,spaceAttributeDefinitions,kapps';
+const settingsAttribute = (definition, attributesMap) => ({
+  name: definition.name,
+  description: definition.description,
+  value: attributesMap[definition.name],
+});
+const settingsAttributes = (attributeDefinitions, attributesMap) =>
+  fromJS(
+    attributeDefinitions.reduce(
+      (acc, def) => ({
+        ...acc,
+        [def.name]: settingsAttribute(def, attributesMap),
+      }),
+      {},
+    ),
+  );
+const spaceMapping = space => {
+  const attributes = settingsAttributes(
+    space.spaceAttributeDefinitions,
+    space.attributesMap,
+  );
+  const kapps = List(space.kapps);
+  const requiredKapps = {
+    queue: kapps.find(
+      kapp =>
+        kapp.slug ===
+        attributes.getIn(['Queue Kapp Slug', 'value', 0], 'queue'),
+    ),
+    admin: kapps.find(
+      kapp =>
+        kapp.slug ===
+        attributes.getIn(['Admin Kapp Slug', 'value', 0], 'admin'),
+    ),
+    services: kapps.find(
+      kapp =>
+        kapp.slug ===
+        attributes.getIn(['Services Kapp Slug', 'value', 0], 'services'),
+    ),
+  };
+  return {
+    attributes,
+    kapps,
+    requiredKapps,
+  };
+};
+
+// Fetches the Settings Required for this component
+const fetchSettings = ({
+  setAttributesMap,
+  setKapps,
+  setRequiredKapps,
+  setPreviousAttributesMap,
+  setSpaceName,
+  setPreviousSpaceName,
+}) => async () => {
+  const { space } = await CoreAPI.fetchSpace({
+    include: SPACE_INCLUDES,
+  });
+  const { attributes, kapps, requiredKapps } = spaceMapping(space);
+  setAttributesMap(attributes);
+  setPreviousAttributesMap(attributes);
+  setKapps(kapps);
+  setRequiredKapps(requiredKapps);
+  setSpaceName(space.name);
+  setPreviousSpaceName(space.name);
+};
+
+// Updates the Settings and Re
+const updateSettings = ({
+  addSuccess,
+  addError,
+  attributesMapDifferences,
+  setAttributesMapDifferences,
+  spaceName,
+  setAttributesMap,
+  setKapps,
+  setRequiredKapps,
+  setPreviousAttributesMap,
+  setSpaceName,
+  setPreviousSpaceName,
+  reloadApp,
+}) => async () => {
+  const { space, serverError } = await CoreAPI.updateSpace({
+    include: SPACE_INCLUDES,
+    space: {
+      name: spaceName,
+      attributesMap: attributesMapDifferences,
+    },
+  });
+  if (space) {
+    const { attributes, kapps, requiredKapps } = spaceMapping(space);
+    addSuccess('Settings were successfully updated', 'Space Updated');
+    setAttributesMap(attributes);
+    setPreviousAttributesMap(attributes);
+    setKapps(kapps);
+    setRequiredKapps(requiredKapps);
+    setSpaceName(space.name);
+    setPreviousSpaceName(space.name);
+    setAttributesMapDifferences(Map());
+    reloadApp();
+  } else {
+    addError(
+      serverError.error || 'Error Updating Space',
+      serverError.statusText || 'Please contact your system administrator',
+    );
+  }
+};
+
+// Handler that is called when an attribute value is changed.
+const handleAttributeChange = ({
+  attributesMap,
+  setAttributesMap,
+  previousAttributesMap,
+  setAttributesMapDifferences,
+}) => event => {
+  const field = event.target.id;
+  const value = List(event.target.value);
+  const updatedAttributesMap = attributesMap.setIn([field, 'value'], value);
+  const diff = updatedAttributesMap
+    .filter((v, k) => !previousAttributesMap.get(k).equals(v))
+    .map(v => v.get('value'));
+  setAttributesMap(updatedAttributesMap);
+  setAttributesMapDifferences(diff);
+};
+
+// Handler that is called when the space name changes
+const handleNameChange = ({ setSpaceName }) => event => {
+  setSpaceName(event.target.value);
+};
+
+// Settings Container
 export const SpaceSettings = compose(
   connect(
-    mapStateToProps,
-    mapDispatchToProps,
+    null,
+    { reloadApp: commonActions.loadApp, ...toastActions },
   ),
-  withState('inputs', 'setInputs', props => ({
-    'Approval Days Due': Utils.getAttributeValue(
-      props.space,
-      'Approval Days Due',
-    ),
-    'Service Days Due': Utils.getAttributeValue(
-      props.space,
-      'Service Days Due',
-    ),
-    'Task Days Due': Utils.getAttributeValue(props.space, 'Task Days Due'),
-    'Task Assignee Team': Utils.getAttributeValue(
-      props.space,
-      'Task Assignee Team',
-    ),
-    'Approval Form Slug': Utils.getAttributeValue(props, 'Approval Form Slug'),
-    'Feedback Form Slug': Utils.getAttributeValue(
-      props.space,
-      'Feedback Form Slug',
-    ),
-    'Help Form Slug': Utils.getAttributeValue(props.space, 'Help Form Slug'),
-    'Request Alert Form Slug': Utils.getAttributeValue(
-      props.space,
-      'Request Alert Form Slug',
-    ),
-    'Suggest a Service Form Slug': Utils.getAttributeValue(
-      props.space,
-      'Suggest a Service Form Slug',
-    ),
-    'Task Form Slug': Utils.getAttributeValue(props.space, 'Task Form Slug'),
-  })),
+  withState('attributesMap', 'setAttributesMap', Map()),
+  withState('previousAttributesMap', 'setPreviousAttributesMap', Map()),
+  withState('attributesMapDifferences', 'setAttributesMapDifferences', Map()),
+  withState('requiredKapps', 'setRequiredKapps', List()),
+  withState('kapps', 'setKapps', List()),
+  withState('spaceName', 'setSpaceName', ''),
+  withState('previousSpaceName', 'setPreviousSpaceName', ''),
+  withHandlers({
+    handleNameChange,
+    handleAttributeChange,
+    fetchSettings,
+    updateSettings,
+  }),
   lifecycle({
     componentWillMount() {
-      this.props.fetchSpaceSettings();
-      this.props.fetchSpaceSettingsTeams();
+      this.props.fetchSettings();
     },
   }),
-)(SettingsContainer);
+)(SettingsComponent);
