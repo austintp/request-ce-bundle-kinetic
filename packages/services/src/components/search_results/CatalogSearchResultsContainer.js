@@ -22,7 +22,6 @@ const mapStateToProps = (state, props) => {
 export const CatalogSearchResultsContainer = compose(
   connect(mapStateToProps),
   withState('articles', 'setArticles', []),
-  // withHandlers({ setKnowledgeArticles }),
   lifecycle({
     componentWillMount() {
       KnowledgeManagement.fetchKnowledgeArticles(

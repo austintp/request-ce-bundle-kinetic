@@ -137,7 +137,11 @@ export const AppComponent = props => {
           path="/requests/:type?/request/:submissionId/:mode"
           component={RequestShowContainer}
         />
-        <Route exact path="/articles/:id/:query?" component={KnowledgeShow} />
+        <KappRoute
+          exact
+          path="/articles/:id/:query?"
+          component={KnowledgeShow}
+        />
       </main>
     ),
   });
