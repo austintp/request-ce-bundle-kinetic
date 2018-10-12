@@ -13,7 +13,7 @@ import { CoreAPI } from 'react-kinetic-core';
 
 import { Cache } from './Cache';
 
-export const TeamMenuItem = props => {
+export const KappMenuItem = props => {
   const disabledReason = props.disabledFn && props.disabledFn(props.option);
   return (
     <MenuItem
@@ -21,11 +21,11 @@ export const TeamMenuItem = props => {
       position={props.position}
       disabled={!!disabledReason}
     >
-      <div className="team-menu-item">
+      <div className="kapp-menu-item">
         <div>
           <Highlighter search={props.text}>{props.option.label}</Highlighter>
           <div>
-            <small>Team</small>
+            <small>Kapp</small>
           </div>
         </div>
         {disabledReason && <small>{disabledReason}</small>}
@@ -38,7 +38,7 @@ const renderMenu = memoize(disabledFn => (results, props) => (
   <Menu {...props}>
     {results.map((option, i) => {
       return (
-        <TeamMenuItem
+        <KappMenuItem
           key={i}
           option={option}
           position={i}
@@ -56,13 +56,12 @@ const renderToken = (option, props, index) => (
   </Token>
 );
 
-const teamCache = new Cache(() =>
-  CoreAPI.fetchTeams({ include: 'attributesMap' }).then(response =>
-    response.teams
-      .filter(team => !team.name.startsWith('Role::'))
-      .map(team => ({
-        label: team.name,
-        team,
+const kappCache = new Cache(() =>
+  CoreAPI.fetchSpace({ include: 'kapps,kapps.attributesMap' }).then(
+    ({ space }) =>
+      space.kapps.map(kapp => ({
+        label: kapp.name,
+        kapp,
       })),
   ),
 );
@@ -76,7 +75,7 @@ const getSelected = (value, valueMapper, options) =>
     anyMatch(value, valueMapper ? valueMapper(option) : option),
   );
 
-export class TeamSelect extends React.Component {
+export class KappSelect extends React.Component {
   state = { options: null };
 
   static getDerivedStateFromProps(props) {
@@ -84,8 +83,8 @@ export class TeamSelect extends React.Component {
   }
 
   componentDidMount() {
-    teamCache.get().then(teams => {
-      const options = [...teams].sort((a, b) => a.label.localeCompare(b.label));
+    kappCache.get().then(kapps => {
+      const options = [...kapps].sort((a, b) => a.label.localeCompare(b.label));
       this.setState({ options });
     });
   }
@@ -106,9 +105,6 @@ export class TeamSelect extends React.Component {
       this.state.options && (
         <div className="form-group">
           <label>{this.props.label}</label>
-          <small className="form-text text-muted">
-            {this.props.description}
-          </small>
           <Typeahead
             className={this.props.className}
             multiple={this.props.multiple}
@@ -121,8 +117,11 @@ export class TeamSelect extends React.Component {
               this.state.options,
             )}
             onChange={this.handleChange}
-            placeholder={this.props.placeholder || 'Select a Team'}
+            placeholder={this.props.placeholder || 'Select a Kapp'}
           />
+          <small className="form-text text-muted">
+            {this.props.description}
+          </small>
         </div>
       )
     );
