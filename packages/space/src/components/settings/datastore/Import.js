@@ -107,11 +107,9 @@ export class ImportComponent extends Component {
 
   handleReset = () => {
     this.readFile = null;
+    this.props.resetImportFailedCall();
     this.setState({
-      records: List(),
-      recordsHeaders: Set([]),
-      missingFields: List([]),
-      percentComplete: 0,
+      postResult: false,
     });
   };
 
@@ -147,7 +145,10 @@ export class ImportComponent extends Component {
             !found.checked
           ) {
             obj.id = val;
-          } else if (!found.checked) {
+          } else if (
+            found.header.toLowerCase() !== 'datastore record id' &&
+            !found.checked
+          ) {
             const fieldObject = this.formFields.find(
               field => field.name === header,
             );
@@ -257,8 +258,13 @@ export class ImportComponent extends Component {
       nextProps.importComplete &&
       this.props.importComplete !== nextProps.importComplete
     ) {
-      this.setState({ postResult: true });
-      this.handleReset();
+      this.setState({
+        postResult: true,
+        records: List(),
+        recordsHeaders: Set([]),
+        missingFields: List([]),
+        percentComplete: 0,
+      });
     }
   }
 
@@ -279,7 +285,6 @@ export class ImportComponent extends Component {
                 <div className="dropzone">
                   <Dropzone
                     onDrop={this.handleChange}
-                    accept="text/plain, application/vnd.ms-excel, text/csv"
                     className="dropzone__area"
                     acceptClassName="dropzone__area--active"
                     rejectClassName="dropzone__area--disabled"
@@ -470,7 +475,7 @@ export class ImportComponent extends Component {
                         <tr key={idx}>
                           {this.state.headerToFieldMap.map((obj, idx) => {
                             if (
-                              obj.field.toLowerCase() === 'datastore record id'
+                              obj.header.toLowerCase() === 'datastore record id'
                             ) {
                               return <td key={obj.field + idx}>{id}</td>;
                             }
@@ -510,6 +515,7 @@ export const mapStateToProps = state => ({
 export const mapDispatchToProps = {
   deleteAllSubmissions: actions.deleteAllSubmissions,
   executeImport: actions.executeImport,
+  resetImportFailedCall: actions.resetImportFailedCall,
 };
 
 export const Import = connect(
