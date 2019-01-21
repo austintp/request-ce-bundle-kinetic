@@ -21,6 +21,7 @@ export const singleSignOn = (endpoint, dimensions, target = '_blank') =>
           reject('Single Sign-on failed');
         } else if (popup.location.includes !== 'app/saml/idp-selection') {
           resolve();
+          setTimeout(popup.close(), 200);
         } else {
           setTimeout(checkPopup, 100);
         }
