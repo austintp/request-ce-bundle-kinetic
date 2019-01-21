@@ -2,7 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose, withState, withHandlers, lifecycle } from 'recompose';
 import { Modal, ModalBody, ModalFooter } from 'reactstrap';
-import { login } from '../../utils/authentication';
+import { login, ssoLoginUrl } from '../../utils/authentication';
+import { singleSignOn } from '../../utils/singleSignOn';
 import { actions } from '../../redux/modules/auth';
 import { I18n } from '../../I18nProvider';
 
@@ -57,10 +58,21 @@ export const LoginModalComponent = props =>
           <span className="text-danger">
             <I18n>{props.error || ' '}</I18n>
           </span>
+          <hr />
+          <button
+            type="button"
+            className="btn btn-link"
+            onClick={props.handleSingleSignOn}
+          >
+            Use Single Sign-on
+          </button>
         </ModalBody>
         <ModalFooter>
-          <button className="btn btn-primary">
-            <I18n>Sign In</I18n>
+          <button
+            className="btn btn-primary"
+            disabled={!props.email || !props.password}
+          >
+            Sign In
           </button>
         </ModalFooter>
       </form>
@@ -83,6 +95,12 @@ const handleLogin = props => event => {
     .catch(props.handleAuthError);
 };
 
+const handleSingleSignOn = props => event => {
+  singleSignOn(ssoLoginUrl, { width: 770, height: 750 })
+    .then(props.success)
+    .catch(props.handleAuthError);
+};
+
 export const LoginModal = compose(
   connect(
     mapStateToProps,
@@ -95,11 +113,11 @@ export const LoginModal = compose(
     handleEmail: props => event => props.setEmail(event.target.value),
     handlePassword: props => event => props.setPassword(event.target.value),
     handleAuthError: props => error => {
-      props.setError(error.response.data.error);
+      props.setError(error.response ? error.response.data.error : error);
       props.setPassword('');
     },
   }),
-  withHandlers({ handleLogin }),
+  withHandlers({ handleLogin, handleSingleSignOn }),
   withHandlers(() => {
     let emailEl = null;
     return {

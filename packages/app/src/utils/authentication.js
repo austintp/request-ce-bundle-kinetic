@@ -12,3 +12,5 @@ export const login = (username, password) =>
       __bypassAuthInterceptor: true,
     },
   );
+
+export const ssoLoginUrl = `${bundle.spaceLocation()}/app/saml/login/alias/${bundle.spaceSlug()}`;

@@ -1,10 +1,12 @@
 import React from 'react';
 import { compose, withHandlers } from 'recompose';
-import { login } from '../../utils/authentication';
+import { login, ssoLoginUrl } from '../../utils/authentication';
 import { I18n } from '../../I18nProvider';
+import { singleSignOn } from '../../utils/singleSignOn';
 
 export const Login = ({
   handleLogin,
+  handleSingleSignOn,
   toResetPassword,
   toCreateAccount,
   email,
@@ -67,6 +69,14 @@ export const Login = ({
       <button
         type="button"
         className="btn btn-link"
+        onClick={handleSingleSignOn}
+      >
+        Use Single Sign-on
+      </button>
+      <hr />
+      <button
+        type="button"
+        className="btn btn-link"
         onClick={toResetPassword(routed)}
       >
         <I18n>Reset Password</I18n>
@@ -79,6 +89,20 @@ const handleLogin = ({ tryAuthentication, email, password }) => e => {
   e.preventDefault();
   tryAuthentication(email, password);
 };
+const handleSingleSignOn = props => async event => {
+  singleSignOn(ssoLoginUrl, {
+    width: 770,
+    height: 750,
+  })
+    .then(() => {
+      props.handleAuthenticated();
+      if (props.routed) {
+        props.push('/');
+      }
+    })
+    .catch(props.setError);
+};
+
 const tryAuthentication = ({
   setError,
   setPassword,
@@ -106,5 +130,6 @@ export const LoginForm = compose(
   }),
   withHandlers({
     handleLogin,
+    handleSingleSignOn,
   }),
 )(Login);
