@@ -19,8 +19,10 @@ export const singleSignOn = (endpoint, dimensions, target = '_blank') =>
       } else if (sameHost(popup, window)) {
         if (popup.location.includes === 'authentication_error') {
           reject('Single Sign-on failed');
-        } else {
+        } else if (popup.location.includes !== 'app/saml/idp-selection') {
           resolve();
+        } else {
+          setTimeout(checkPopup, 100);
         }
       } else {
         setTimeout(checkPopup, 100);
